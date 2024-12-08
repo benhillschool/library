@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, violet, pink); /* Initial gradient background */
+            color: #E0DFCA; /* Text color */
+            font-family: 'Roboto', sans-serif; /* Font from Google Fonts */
+            display: flex; /* Flexbox for centering */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh; /* Full height */
+            margin: 0; /* Remove default margin */
+            overflow: hidden; /* Prevent scrollbars */
+            position: relative; /* For absolute positioning of the gradient effect */
+        }
+
+        /* Animated gradient effect */
+        .gradient-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg,  #7F00FF, #000000, #9400d3, #bf73dd, #000000);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite; /* Infinite animation */
+            z-index: 0; /* Send behind the content */
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* White background with transparency */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+            width: 100%; /* Full width for responsiveness */
+            max-width: 700px; /* Increased maximum width for the container */
+            position: relative; /* Relative positioning to bring it above the gradient */
+            z-index: 1; /* Bring the container above the gradient */
+            overflow-y: auto; /* Allow vertical scrolling */
+            max-height: 70vh; /* Set a maximum height for the container */
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif; /* Different font for heading */
+            color: #333; /* Dark color for the heading */
+        }
+
+        .text-black {
+            color: #000000; /* Black color for text */
+        }
+
+        /* Custom scrollbar styles */
+        .container::-webkit-scrollbar {
+            width: 8px; /* Width of the scrollbar */
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: #888; /* Color of the scrollbar thumb */
+            border-radius: 10px; /* Rounded corners for the thumb */
+        }
+
+        .container::-webkit-scrollbar-thumb:hover {
+            background: #555; /* Darker color on hover */
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Color of the scrollbar track */
+            border-radius: 10px; /* Rounded corners for the track */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* Bootstrap primary button color */
+            border: none; /* Remove border */
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-effect"></div> <!-- Gradient effect layer -->
+    <div class="container mt-5">
+        <h1 class="text-center">Search Results for 
+            <br> "{{ search_input }}"</h1>
+        <div class="mt-4 text-black">  <!-- Changed class to make text black -->
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% else %}
+                {% if results|length == 0 %}
+                    <div class="alert alert-info">No results found in the library for your search.</div>
+                {% else %}
+                    <h4>Books:</h4>
+                    <ul class="list-group">
+                        {% for result in results %}
+                            <li class="list-group-item text-black">  <!-- Changed class to make text black -->
+                                <strong>Book Name:</strong> {{ result.bk_name }}<br>
+                                <strong>Book ID:</strong> {{ result.bk_id }}<br>
+                                <strong>Status:</strong> {{ result.bk_status }}<br>
+                                {% if result.bk_status == 'Issued' %}
+                                    <strong>Available by:</strong> {{ result.due_date }}<br>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <h4 class="mt-4">Generated Information:</h4>
+                <pre class="text-black">{{ generated_info }}</pre>  <!-- Changed class to make text black -->
+            {% endif %}
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Back to Search</a>
+    </div>
+</body>
+</html>
